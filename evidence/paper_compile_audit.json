@@ -1,0 +1,57 @@
+{
+  "all_fonts_embedded": true,
+  "anonymity_preserved": true,
+  "created_utc": "2026-07-29T11:41:08.056438+00:00",
+  "figure_checks": {
+    "figure_1_nimbus": true,
+    "figure_1_no_dejavu": true,
+    "figure_4_nimbus": true,
+    "figure_4_no_dejavu": true,
+    "pipeline_is_architecture": true,
+    "qualitative_decisions_explicit": true
+  },
+  "fonts_embedded": true,
+  "letter_size": true,
+  "main_pdf_sha256": "f216a4906347af0afddf230af98fb9c63d7b9177b1b2e70c410d9ad74fe17d44",
+  "main_tex_sha256": "17fb7e23988d720bbdbe8fe979f6d52d84df0ab90e8e462eb87a120e09b24b55",
+  "new_experiment_performed": false,
+  "official_test_accessed": false,
+  "overfull_box_count": 0,
+  "page_size": "612 x 792 pts (letter)",
+  "placeholder_count": 0,
+  "predecessor": "/ssd1/team_cam_ai/ttdat/final_draft/trackfeat_aisi_submission_04",
+  "predecessor_main_pdf_sha256": "2485f4131f5be7368e08cb2b444c3d01677ddf1fb374708b763310f563735dff",
+  "reference_page_count": 1,
+  "references_first_page": 8,
+  "required_scientific_values_present": {
+    "full_132_validation": true,
+    "primary_accident": true,
+    "reduced_52_validation": true,
+    "timestamp_diagnostic": true
+  },
+  "scientific_artifact_byte_parity": {
+    "accident_ablation_registry.csv": true,
+    "calibration_policy_registry.csv": true,
+    "paired_validation_bootstrap.csv": true,
+    "paper_statistic_ledger.csv": true,
+    "result_macros.tex": true
+  },
+  "scientific_values_changed": false,
+  "status": "EMERGENCY_COMMUNICATION_REVISION_SEALED",
+  "successor": "/ssd1/team_cam_ai/ttdat/final_draft/trackfeat_aisi_submission_05",
+  "technical_page_count": 7,
+  "title_exact": true,
+  "total_page_count": 8,
+  "training_or_tuning_performed": false,
+  "type3_fonts": false,
+  "unresolved_issue_count": 0,
+  "unresolved_reference_or_citation_count": 0,
+  "visual_page_audit": {
+    "figure_1_actual_method_architecture": true,
+    "figure_4_decisions_self_contained": true,
+    "inspected_pages": 8,
+    "no_clipping_or_overlap": true,
+    "rendered_pages": 8,
+    "status": "PASS"
+  }
+}

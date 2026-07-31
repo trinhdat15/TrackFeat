@@ -1,0 +1,15 @@
+{
+  "created_utc": "2026-07-29T10:31:05.353250+00:00",
+  "no_model_policy_feature_or_evaluator_change": true,
+  "no_training_or_tuning": true,
+  "no_validation_rescoring": true,
+  "official_test_accessed": false,
+  "preflight": "paper_reporting_preflight_03.json",
+  "primary_and_diagnostic_statuses_preserved": true,
+  "scientific_claim_statuses": [
+    "SO-TAD sealed validation primary",
+    "ACCIDENT grouped-OOF development primary",
+    "oracle/report-only diagnostics explicitly labeled"
+  ],
+  "status": "REPORT_ONLY_PAPER_INTEGRATION_COMPLIANT"
+}

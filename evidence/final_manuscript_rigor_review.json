@@ -1,0 +1,17 @@
+{
+  "created_utc": "2026-07-29T11:41:08.056438+00:00",
+  "findings": [
+    "The structured operator and representation-policy factorization are explicit.",
+    "Primary SO-TAD values and secondary ACCIDENT values remain frozen.",
+    "Secondary tasks remain capability analyses and diagnostics.",
+    "Attribution is described as model attribution, not causal evidence.",
+    "Deployment and official-test claims remain bounded."
+  ],
+  "official_test_accessed": false,
+  "recommendation": "ACCEPT_WITH_EXPLICIT_RESEARCH_PROTOTYPE_LIMITATIONS",
+  "review_scope": "read-only manuscript communication and frozen-evidence audit",
+  "scientific_values_changed": false,
+  "unresolved_issue_count": 0,
+  "unsupported_claims_found": 0,
+  "verdict": "FINAL_MANUSCRIPT_RIGOR_PASS_WITH_SCOPE_LIMITATIONS"
+}

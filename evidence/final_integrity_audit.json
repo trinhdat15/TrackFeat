@@ -1,0 +1,69 @@
+{
+  "ablation_registry_rows": 14,
+  "accident_population": "507 official IID-train videos; five source-grouped OOF folds",
+  "all_frozen_hashes_pass": true,
+  "changed_scientific_configuration": false,
+  "compile_audit_pass": true,
+  "compile_audit_path": "paper_compile_audit.json",
+  "created_utc": "2026-07-29T10:31:05.353250+00:00",
+  "detector_or_tracker_rerun": false,
+  "figure_hash_checks": {
+    "figure_1_pdf": true,
+    "figure_1_png": true,
+    "figure_4_pdf": true,
+    "figure_4_png": true
+  },
+  "figure_provenance_hashes_pass": true,
+  "frozen_hash_checks": {
+    "event_evaluator": {
+      "actual_sha256": "af29601192d8c77d44d7281afb4cd8e7d4937ae743350e866ba9d464852fef66",
+      "expected_sha256": "af29601192d8c77d44d7281afb4cd8e7d4937ae743350e866ba9d464852fef66",
+      "pass": true,
+      "path": "source/evaluate_events_v12_58e.py"
+    },
+    "full_model": {
+      "actual_sha256": "397c4860614de1d6eb2d008519aaa03a8a99cab5948c8a28b83ff7b322154fea",
+      "expected_sha256": "397c4860614de1d6eb2d008519aaa03a8a99cab5948c8a28b83ff7b322154fea",
+      "pass": true,
+      "path": "outputs_sotad_phase12_old4c_motor_lowconf_t012/v13_interpretable_132_feature_study/v13_b_clean_132_training/training/models/lightgbm_132_selected.joblib"
+    },
+    "full_policy": {
+      "actual_sha256": "0a4463a9e309b41b5fcffae4a989b8e234f3b4fc6160fd34e4ed77fb2cad1009",
+      "expected_sha256": "0a4463a9e309b41b5fcffae4a989b8e234f3b4fc6160fd34e4ed77fb2cad1009",
+      "pass": true,
+      "path": "outputs_sotad_phase12_old4c_motor_lowconf_t012/v13_interpretable_132_feature_study/v13_c_event_calibration/selected_event_policy.json"
+    },
+    "reduced_model": {
+      "actual_sha256": "9f66abbb9514f653cfaa83bd55c79ffe69be6cfd1a1f3d6f9f6bed3e03db26e6",
+      "expected_sha256": "9f66abbb9514f653cfaa83bd55c79ffe69be6cfd1a1f3d6f9f6bed3e03db26e6",
+      "pass": true,
+      "path": "outputs_sotad_phase12_old4c_motor_lowconf_t012/v13_interpretable_132_feature_study/v13_d_feature_ablation_reduction/completion_01/reduced_model/lightgbm_reduced.joblib"
+    },
+    "reduced_policy": {
+      "actual_sha256": "bacbdf30e96fac47ceef162b5425bbef9c8ecc04243f40d3f4a7f049898913f4",
+      "expected_sha256": "bacbdf30e96fac47ceef162b5425bbef9c8ecc04243f40d3f4a7f049898913f4",
+      "pass": true,
+      "path": "outputs_sotad_phase12_old4c_motor_lowconf_t012/v13_interpretable_132_feature_study/v13_d_feature_ablation_reduction/completion_01/selected_reduced_policy.json"
+    }
+  },
+  "model_attribution_language": "model attribution; not causal explanation",
+  "official_test_accessed": false,
+  "qualitative_physical_source_folder_note": "Historical physical train/test folder names do not define scientific roles; all selected IDs are canonical role=validation.",
+  "qualitative_probability_parity": true,
+  "qualitative_roles": [
+    "validation"
+  ],
+  "qualitative_value_rows": 9,
+  "scientific_experiment_run": false,
+  "sotad_validation_population": {
+    "accident": 46,
+    "normal": 286,
+    "total": 332
+  },
+  "status": "COMPLETE_SEVEN_PAGE_MANUSCRIPT_SEALED",
+  "structured_ablation_table_rows": 10,
+  "timestamp_tsc_validation_evaluated": false,
+  "training_or_tuning_occurred": false,
+  "unresolved_issue_count": 0,
+  "validation_rescored_with_changed_configuration": false
+}

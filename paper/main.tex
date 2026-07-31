@@ -1,0 +1,282 @@
+\documentclass[letterpaper]{article}
+\usepackage[submission]{aaai2027}
+\usepackage[hyphens]{url}
+\usepackage{graphicx}
+\urlstyle{rm}
+\def\UrlFont{\rm}
+\usepackage{natbib}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{xcolor}
+\frenchspacing
+\setcounter{secnumdepth}{2}
+\input{result_macros}
+\newcommand{\method}{\textsc{TrackFeat}}
+
+\title{TrackFeat: Interpretable Traffic Accident Detection Using Vehicle-Track Interactions}
+\author{Anonymous AAAI-27 Submission}
+\affiliations{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Traffic accident detection from fixed cameras must separate physical incidents from dense but ordinary traffic and convert framewise evidence into discrete alerts. We present \method{}, an interpretable feature-based detector conditioned on a fixed vehicle-perception stack. Persistent tracks are mapped to an ordered 132-feature representation of image-plane motion, direction, interaction, deformation, temporal history, and reliability. A gradient-boosted classifier scores active tracks, and a separately calibrated hysteretic event layer produces video alerts. On a sealed 332-video SO-TAD validation set containing 46 accidents, the full representation obtained precision \FullPrecision{}, recall \FullRecall{}, F1 \FullFOne{}, and \FullFPH{} normal false events per camera-hour. A 52-feature reduction had the same recall but lower F1 and more normal false events; its development recall advantage did not transfer. Training-only model attribution and frozen ablations complement the event metrics without being interpreted as causal effects. Impact-time, image-location, and collision-category estimation are treated as secondary capability analyses, distinct from the primary alerting task.
+\end{abstract}
+
+\section{Introduction}
+Fixed-camera accident detection differs from ego-centric anticipation and generic anomaly recognition. A surveillance view contains many unrelated actors, strong perspective variation, partial occlusion, identity fragmentation, and long intervals of normal interaction. A useful detector must therefore do more than assign a high score to an unusual frame: it must preserve accident recall while controlling discrete false events over normal camera-hours.
+
+End-to-end video models can exploit appearance, but their internal evidence and temporal decision rules are often difficult to inspect. Conversely, a purely trajectory-based anomaly score may not represent contact, box deformation, track reliability, or the distinction between a transient score spike and a sustained event. We study an explicit middle ground. \method{} conditions on fixed upstream vehicle detections and identities, represents each current track and its local actor context with documented past-only features, and separates statistical scoring from event formation.
+
+We test whether a past-only, actor-centered evidence operator combined with a separately calibrated event policy can support auditable accident alerts under an explicit false-event budget. Secondary analyses ask whether the same structured evidence contains information about impact time, image location, and collision category. These tasks are reported separately because offline impact characterization does not establish online alert quality.
+
+Our contributions are fourfold:
+\begin{itemize}
+    \item We define a structured track-evidence operator that joins each actor’s past-only history, local interaction context, reliability, missingness, and trailing temporal summaries in an ordered 132-feature contract.
+    \item We independently freeze the row-scoring, scene-aggregation, and event-policy contracts, selecting the classifier on grouped training folds and the hysteretic policy only on calibration.
+    \item We compare the full contract with a deterministic 52-feature development reduction using sealed event metrics, paired video bootstrap, frozen ablations, and training-OOF model attribution.
+    \item We define bounded secondary evaluations of when, where, and what type of impact occurred, while keeping those analyses separate from the operational SO-TAD detector.
+\end{itemize}
+
+\clearpage
+\section{Related Work}
+\subsection{Motion and Trajectory Evidence}
+Trajectory-based traffic-anomaly methods model paths, motion consistency, or semantic road structure instead of raw appearance \cite{zhao2019trajectory,damicantonio2024utrand}. This representation is attractive for fixed cameras because it exposes actor histories and permits no-future-frame evaluation. However, unusual motion is not synonymous with an accident: abrupt turns, congestion, detector jitter, and track fragmentation can all create large trajectory deviations. \method{} retains structured motion evidence while adding current interaction, overlap persistence, shape variation, and reliability fields. It also evaluates emitted events rather than treating a per-frame anomaly score as the final output.
+
+\subsection{Video Anomaly Detection and Accident Anticipation}
+Future-frame prediction detects anomalies through prediction error \cite{liu2018future}, while weakly supervised surveillance methods learn from video labels using multiple-instance ranking or feature-magnitude objectives \cite{sultani2018realworld,tian2021rtfm}. Dashcam accident anticipation instead predicts risk before impact from a moving viewpoint \cite{zeng2017agent,bao2021drive,thakur2024graph}. These settings motivate temporal reasoning, but their viewpoints, targets, and evaluation units are not interchangeable with fixed-camera event detection. Our primary metric therefore counts matched accident events and false events per normal camera-hour.
+
+\subsection{YoFlow as the Closest Methodological Reference}
+YoFlow combines YOLO detections, dense optical-flow speed-vector variation, and XGBoost for scenario-based accident detection \cite{haryanto2025yoflow}. It is the closest methodological reference because it also converts explicit vehicle-motion evidence into a tree-based decision. The distinction is representational and evaluative: \method{} uses persistent actor identities, an executable unary-and-context feature contract, trailing temporal summaries, and a calibrated event state machine, and it reports video-disjoint false-event burden on surveillance video. We do not rank the methods directly because YoFlow's simulated roadside setting and protocol differ from SO-TAD.
+
+\subsection{Structured Accident Benchmarks}
+SO-TAD targets surveillance accident detection and localization \cite{chen2025sotad}. ACCIDENT adds structured temporal, spatial, and five-way collision-category tasks across real and synthetic video \cite{picek2026accident}. These benchmarks expose complementary questions. SO-TAD supports the primary study of past-only alerts against normal traffic, whereas ACCIDENT supports secondary impact characterization within accident clips. We preserve that distinction rather than combining unlike metrics into one claim.
+
+\subsection{Interpretable Boosted Trees}
+LightGBM provides efficient nonlinear tree ensembles \cite{ke2017lightgbm}; SHAP provides additive local model attributions \cite{lundberg2017shap}. Attribution alone does not establish that a feature causes a detection or improves event behavior. We consequently describe SHAP only as model attribution and pair it with grouped development ablations and event-level error ledgers.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{figures/figure_pipeline_v4.pdf}
+\caption{\textbf{TrackFeat architecture.} Fixed upstream perception yields persistent vehicle identities and past-only histories. The contribution is the explicit structured track-evidence operator---unary actor, local interaction, reliability/missingness, and trailing temporal evidence---and its contract-separated factorization into row scoring, scene aggregation, and a calibration-frozen event operator. Neither the detector, tracker, nor boosted-tree optimizer is presented as the methodological contribution.}
+\label{fig:pipeline}
+\end{figure*}
+
+\section{TrackFeat Method}
+\subsection{Conditional Fixed-Upstream Formulation}
+Figure~\ref{fig:pipeline} summarizes the system. Video is decoded on a past-only 5-Hz grid and passed to a task-adapted YOLOv8s-derived checkpoint at 960-pixel inference resolution. The detector covers motorbike, car, bus, and truck classes used downstream. Class-agnostic non-maximum suppression uses IoU 0.55; frozen confidence stages admit low-confidence observations from 0.05 and use 0.15 as the operational detector threshold. The task-adapted checkpoint was fixed before downstream evaluation. It covers the required traffic classes, while downstream motion depends on vehicle coverage and stable boxes. We evaluate \method{} conditional on this stack, not as a detector-family comparison.
+
+BoxMOT BoT-SORT associates detections with a 30-frame buffer, ECC camera-motion compensation, and enabled appearance matching. The ReID branch uses a frozen ResNet50-IBN-a backbone, GeM pooling, and a 512-dimensional normalized embedding from the current detection crop. Persistent identity supports velocity, acceleration, heading, continuity, and pair persistence without end-of-video information.
+
+\subsection{Proposals and Weak Row Labels}
+At time $t$, one proposal corresponds to one active sanitized track $i$. Unary evidence describes that track. Local context summarizes the nearest current actors by distance, overlap, and relative image-plane motion; the row does not assert that a particular neighbor is a ground-truth collision participant. Multiple tracks yield multiple proposals; identifiers combine video, tracker step, and track identity. Empty videos emit no event.
+
+During training, accident-window labels are broadcast to all eligible rows at the annotated timestamp. They are window labels, not actor-responsibility labels. Feature attribution can explain the fitted score for a row, but it cannot identify legal fault or establish which actor caused the accident.
+
+\subsection{Structured Track-Evidence Operator}
+For a current track $i$, lag set $L$, and current-neighbor set $\mathcal{N}_{i,t}$, define
+\begin{align}
+H_{i,t}^{L}&=\{x_{i,t-\ell}:\ell\in L\},\quad
+u_{i,t}=\phi_u(H_{i,t}^{L}),\notag\\
+g_{i,t}&=\underset{j\in\mathcal{N}_{i,t}}{\operatorname{Agg}}\,
+\phi_p(H_{i,t}^{L},H_{j,t}^{L}),\\
+r_{i,t}&=\phi_r(H_{i,t}^{L}),\notag\\
+z_{i,t}&=[u_{i,t},g_{i,t},r_{i,t},\Delta_L(u_{i,t},g_{i,t},r_{i,t})].\notag
+\end{align}
+Here $\phi_u$ represents unary actor evidence, $\phi_p$ local interaction evidence, $\phi_r$ reliability and missingness, and $\Delta_L$ trailing temporal operators. The complete factorization is
+\begin{equation}
+p_{i,t}=f_\theta(z_{i,t}),\quad
+s_t=|A_t|^{-1}\!\sum_{i\in A_t}p_{i,t},\quad
+\widehat{E}=\Psi_\pi(s_{1:T}).
+\label{eq:factorization}
+\end{equation}
+All representation terms depend only on observations at or before $t$. TrackFeat's methodological contribution is not a new boosted-tree optimizer. It is a contract-separated accident-detection formulation that fixes the unit of evidence at the current vehicle track, represents its past-only actor history and local interaction context explicitly, and separates row scoring, scene aggregation, and event emission.
+
+\subsection{Unary and Interaction Features}
+For sanitized box center $c_{i,t}$ and image dimensions $(W,H)$, center displacement is represented in normalized image coordinates. Trailing differences provide image-plane motion change, speed loss, and direction or curvature proxies. Box width, height, area, scale change, aspect change, and center/scale/aspect jitter capture visible geometric disturbance. These are image-space quantities; we do not call them metric speed, physical acceleration, or calibrated time-to-collision.
+
+Interaction fields describe the local neighbor context: normalized separation, nearby-track speed, velocity-direction similarity, overlap/contact, persistent contact, and quality-masked context distance. The implementation retains a composite interaction proxy. Reliability fields expose track age, spawn bursts, frame gaps, small/edge/far-field masks, fragmentation risk, and physics-validity masks rather than silently replacing unreliable values with confident evidence.
+
+The representation remains conditional on available tracks: reliability fields expose weak support but cannot reconstruct a missing actor. A read-only validation audit therefore separates complete detector coverage loss, fragmented or noisy trajectories, and downstream failures with supported tracks; these strata are descriptive robustness evidence, not causal effects of the perception stack.
+
+\subsection{Past-Only Temporal Expansion and Contracts}
+The exact full input contains 30 current fields and 102 trailing transforms. Temporal operators comprise lags $\{1,2,3,5,8\}$, one-step differences, 10-sample trailing mean/maximum/standard deviation/sum, exponentially weighted means, acceleration/speed-loss/contact streaks, one motion interaction, and smoothed reliability diagnostics. Missing lags remain missing according to the frozen contract and are handled natively by LightGBM. Centered windows, future frames, annotations, and full-track statistics are excluded.
+
+The 52-feature contract was frozen from training OOF only. Its mixed rule removed unavailable or constant inputs, required favorable direction in two folds, clustered transforms at $|\rho|\geq0.95$, preferred simple stable representatives, and preserved favorable-family coverage. Validation was not used.
+
+\subsection{Track Scoring and Event Formation}
+The row scorer in Eq.~\eqref{eq:factorization} uses binary log loss, video-balanced sample weights, and a frozen positive weight of 5.9998. Three grouped training folds selected a 600-tree LightGBM with learning rate 0.04, 47 leaves, depth 7, minimum child size 60, feature fraction 0.75, row fraction 0.80, and L1/L2 penalties 0.5/8.0.
+
+At each timestamp, the selected policy averages all active-track probabilities, $s_t=|A_t|^{-1}\sum_{i\in A_t}p_{i,t}$, without additional smoothing. The system enters the active state after $K_{\rm up}=2$ consecutive samples at $s_t\geq\tau_{\rm up}$, exits after $K_{\rm down}=3$ samples below $\tau_{\rm down}$, and merges repeated emissions within a 2-s cooldown. Full-132 uses $(\tau_{\rm up},\tau_{\rm down})=(0.65,0.50)$; reduced-52 uses $(0.60,0.45)$. Thus classifier fitting and alert policy selection remain separate.
+
+\clearpage
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\columnwidth]{figures/figure_feature_family_heatmap.pdf}
+\caption{\textbf{Feature-family inclusion and attribution.} Counts show contract allocation; normalized mean absolute SHAP and TP--FP contrasts are computed from frozen training-OOF rows with equal weight per available video. Contrast columns are color-scaled independently. The figure describes model attribution, not causal feature effects, and sealed validation labels are not used.}
+\label{fig:families}
+\end{figure}
+
+\section{Experimental Setup}
+\subsection{Data Roles and Isolation}
+Table~\ref{tab:roles} gives the immutable SO-TAD roles. Canonical-video and source-group audits preserve video-level separation. The official test remains sealed. Thirty training videos have no usable sampled feature row, so grouped classifier fitting covers 1,482 videos; these empty cases remain part of the event-protocol accounting when their roles are evaluated.
+
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{Frozen SO-TAD roles.} Classifier selection uses training only; event-policy selection uses calibration only; validation is opened once after both are fixed.}
+\label{tab:roles}
+\begin{tabular}{lrrr}
+\toprule
+Role & Accident & Normal & Total \\
+\midrule
+Training & 189 & 1,323 & 1,512 \\
+Calibration & 47 & 295 & 342 \\
+Validation & 46 & 286 & 332 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Separated Optimization Roles}
+Let $D_{\rm tr}$, $D_{\rm cal}$, and $D_{\rm val}$ denote the frozen roles, $\theta$ the classifier, and $\pi$ the event policy. The experimental contract is
+\begin{align}
+\theta^* &= \arg\min_{\theta}\;\mathcal{L}_{\rm train}(\theta;D_{\rm tr}),\\
+\pi^* &= \arg\max_{\pi} R(\theta^*,\pi;D_{\rm cal}),\notag\\[-2pt]
+&\quad\text{s.t. }\mathrm{FPH}(\theta^*,\pi;D_{\rm cal})\leq5,\\
+\widehat{G}_{\rm val} &= G(\theta^*,\pi^*;D_{\rm val}).
+\end{align}
+Classifier selection maximizes mean grouped-fold window average precision, with AUROC as tie-break, among five bounded LightGBM candidates. The finite calibration registry contains 356 policies for the full model and clean comparator. Among policies below the FPH budget, selection first maximizes recall, keeps cells within 0.02 recall, chooses the highest F1, and uses precision only as the final tie-break. The validation role is then used once as an unbiased estimate of the already frozen model and policy; it is neither a training role nor a policy-selection role.
+
+\subsection{Event Metrics and Paired Uncertainty}
+The authoritative evaluator performs one-to-one temporal matching. It reports TP and FN accident events, false events on normal video, wrong-window alerts on accident video, duplicate alerts, precision, recall, and F1. Normal false events per camera-hour are
+\begin{equation}
+ \mathrm{FPH}=\frac{N_{\rm FP}^{\rm normal}}
+ {\sum_{v\in D_{\rm normal}}\mathrm{duration}(v)/3600}.
+\end{equation}
+Wrong-window and duplicate accident-video alerts contribute to precision but not the numerator of FPH. Uncertainty uses 2,000 paired video-level bootstrap replicates, sampling accident and normal videos separately and reusing the same sampled identities for both feature contracts. FPH is recomputed from sampled false-event counts and sampled normal duration; rows, frames, and alerts are never resampled as independent units.
+
+\subsection{Contract Comparison and Transfer Statement}
+Figure~\ref{fig:families} asks whether reduction changes family allocation and fitted attribution. Geometry and temporal summaries dominate mean absolute attribution in both models, while interaction and reliability families remain explicitly represented. Fold dispersion and complete feature-level results are retained in the evidence supplement. These values support statements about the fitted models only.
+
+Although the reduced representation was favored during development, its expected advantage did not reproduce on sealed validation. The full representation preserved the same recall while producing fewer normal false events and fewer wrong-window alerts. Specifically, full-132 obtained precision \FullPrecision{}, recall \FullRecall{}, F1 \FullFOne{}, and \FullFPH{} FPH; reduced-52 obtained precision \ReducedPrecision{}, recall \ReducedRecall{}, F1 \ReducedFOne{}, and \ReducedFPH{} FPH. The paired intervals for precision and F1 differences cross zero, so the observed full-model advantage is not presented as statistically decisive. Detailed calibration transfer and error analyses are reserved for the subsequent results pages.
+
+\clearpage
+\section{Results}
+\subsection{Calibration and Operating-Point Transfer}
+This experiment asks whether a policy selected under a calibration false-event budget transfers without validation tuning. The finite registry contains 356 prespecified policies. For the frozen classifier, selection solves
+\begin{equation}
+\begin{aligned}
+\pi^*&=\arg\max_{\pi\in\Pi}R_{\rm cal}(\theta^*,\pi),\\[-2pt]
+&\text{s.t. }\mathrm{FPH}_{\rm cal}(\theta^*,\pi)\leq B,\quad B=5.
+\end{aligned}
+\end{equation}
+Among feasible cells, the rule maximizes recall, retains cells within 0.02 recall, chooses the highest F1, and uses precision as the final tie-break.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/figure_calibration_transfer.pdf}
+\caption{\textbf{Calibration selection and fixed transfer.} Points are all frozen calibration policies and the step curve is their nondominated recall--FPH frontier. The star marks the calibration-selected policy; the diamond is the single sealed-validation transfer point for that unchanged policy, not a validation tuning curve. The calibration constraint does not guarantee that the transferred validation estimate remains below 5 FPH.}
+\label{fig:calibration-transfer}
+\end{figure}
+
+Figure~\ref{fig:calibration-transfer} shows all policies, dominated configurations, the Pareto frontier, and the selected full-132 policy. It achieved calibration recall 0.6170 at 2.4414 FPH. Transferred unchanged to validation, it achieved recall 0.5435 at 5.0310 FPH. The latter is an estimate of the frozen selection, not a newly selected operating point.
+
+\subsection{Feature-Contract Ablation on Held-Out Validation}
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Full-versus-reduced feature-contract ablation.} Normal FP counts false events on normal videos; Wrong-window counts unmatched alerts on accident videos.}
+\label{tab:primary-validation}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Features & TP & \shortstack{Normal\\FP} & FN & \shortstack{Wrong-\\window} & P & R & F1 & FPH \\
+\midrule
+Full-132 & 25 & 8 & 21 & 16 & .5102 & .5435 & .5263 & 5.0310 \\
+Reduced-52 & 25 & 10 & 21 & 18 & .4717 & .5435 & .5051 & 6.2887 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:primary-validation} is a frozen representation ablation: upstream perception, training population, classifier family, evaluator, and role assignments remain fixed; only the input feature contract and its calibration-selected event policy differ. Although the reduced representation was favored during development, its expected advantage did not reproduce on sealed validation. The full representation preserved the same recall while producing fewer observed normal false events and fewer wrong-window alerts. Equal aggregate recall does not itself imply identical per-video detections, and we make no such claim here. Paired reduced-minus-full intervals are $[-0.0975,0.0195]$ for precision, $[-0.0652,0.0652]$ for recall, $[-0.0786,0.0333]$ for F1, and $[0.0000,3.1467]$ for FPH. The precision and F1 intervals cross zero, so they do not establish a decisive full-model advantage. The ablation nevertheless rejects the development hypothesis that feature reduction would generalize better. Validation did not select the 132-feature system.
+
+\subsection{Why Accidents Remain Unmatched}
+The frozen ledger assigns the 21 full-model misses to temporal-window mismatch (D4: 11, 52.4\%), an in-window candidate below threshold (D2: 7, 33.3\%), event-policy suppression (D3: 1, 4.8\%), and complete detector coverage failure (U1: 2, 9.5\%). Only U1 denotes complete upstream coverage loss. Fragmentation or noisy boxes can still contribute to D2 and D4, while ``downstream'' does not imply threshold recoverability.
+
+Calibration-tercile quality strata showed no monotonic association with validation failure: recall was 0.619, 0.471, and 0.500 for low-support, moderate, and high-continuity strata, respectively; the high-continuity stratum contained only eight accidents. Matched and missed accidents had similar composite quality scores (rank-biserial $-0.036$; descriptive $p=0.843$). Both U1 cases were low-support, but D2 and D4 occurred across strata. These associations are descriptive, not evidence that detector or tracker quality caused an outcome.
+
+Threshold-only recovery was zero for the registered calibration-derived candidate under the fixed validation FPH constraint: it recovered no new TP, lost two, and exceeded 5 FPH. A frozen score-fusion candidate exchanged one TP for another without net recall gain and also exceeded the budget. Thus the calibration-derived recovery candidates did not generalize.
+
+\subsection{Calibration-Only Timestamp Diagnostic}
+Episode midpoint increased calibration TP from 29 to 32 and reduced wrong-window alerts from 15 to 12; it corrected four D4 cases but displaced one previously correct event. The frozen zero-loss rule therefore rejected it, and validation was not evaluated. Episode midpoint contained aggregate timing information, but the correction was not monotonic across events.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.98\textwidth]{figures/figure_qualitative_validation_examples_v4.pdf}
+\caption{\textbf{Qualitative held-out validation evidence.} Deterministically selected cases show (A) the annotated-impact frame from the same matched alert, with its unchanged emitted-event time and policy status, (B) a high row score that remains a non-alert after scene aggregation, and (C) a detected episode before the accepted impact window. Thick outlines identify the selected track and local neighbor; small signed cues are model attributions, not cause, responsibility, or fault annotations.}
+\label{fig:qualitative}
+\end{figure*}
+\newpage
+
+\subsection{Qualitative Event Evidence}
+Figure~\ref{fig:qualitative} separates a matched event, a high-scoring row whose scene aggregation and persistence do not form a normal-video alert, and a broad accident score episode displaced from the annotated impact window. SHAP directions describe fitted score use, not accident causation or a universal separator.
+
+\subsection{Structured-Task Ablations}
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{1.0pt}
+\caption{\textbf{Frozen ACCIDENT structured-task ablations.} Primary is the Prompt-1 chain; controls are fixed; oracle uses annotated time; P2 diagnostics do not replace the primary chain.}
+\label{tab:accident-ablations}
+\begin{tabular}{@{}p{0.95cm}p{2.15cm}p{0.80cm}rp{2.30cm}@{}}
+\toprule
+Task & Variant & Metric & Result & \shortstack{Status/\\finding} \\
+\midrule
+Time & Clip midpoint & $T@1$ & .3128 & Control; selected \\
+Time & Learned pair LGBM & $T@1$ & .3044 & P1 learned \\
+Time & T2-A Gaussian & $T@1$ & .2966 & P2 not supported \\
+Space & Closest pair & $S$ & .3780 & Control \\
+Space & Highest-risk pair & $S$ & .4127 & Primary \\
+Space & Risk pair, oracle time & $S$ & .4452 & Oracle diagnostic \\
+Type & Fold majority & $C$ & .3550 & Control \\
+Type & Hard selected pair & $C$ & .3432 & Primary chained \\
+Type & Pred.-time full scene & $C$ & .4320 & P1 diagnostic \\
+Type & Hierarchical C2-C & $C$ & .4675 & P2 modest diag. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:accident-ablations} makes the component controls explicit. These are grouped-OOF development comparisons on the official IID-training role, not official-test results. They vary the registered temporal, spatial, or type representation while preserving the frozen folds and evaluator.
+
+\subsection{Secondary Capability and Transfer Limits}
+The primary grouped-OOF chain obtains $T=0.3128$, $S=0.4127$, $C=0.3432$, and $ACC^{S}=0.3515$, with paired 95\% intervals $[0.2827,0.3437]$, $[0.3806,0.4440]$, $[0.3037,0.3807]$, and $[0.3291,0.3738]$. Image-space spatial localization is the strongest secondary capability. Exact impact time is not supported, and restricting collision-type evidence to one hard-selected pair loses context retained by full-scene pooling. Phase-2 results remain diagnostic and do not replace this primary chain.
+\clearpage
+\section{Discussion}
+\subsection{Practical Interpretation}
+\method{} is an interpretable accident-alerting research prototype for fixed-camera monitoring. Its intended role is to surface candidate intervals with associated tracks and model evidence for human inspection, not to replace operator judgment. It is not autonomous emergency dispatch, legal evidence, accident-cause analysis, fault attribution, or severity estimation.
+
+Recall and false-event burden must be read jointly. On sealed validation, the full model detects 25 of 46 annotated accidents, approximately 54 per 100, while emitting 5.0310 normal false events per camera-hour. The product $5.0310\times8=40.248$ is approximately 40 normal false events per camera over an eight-hour shift. This is an illustrative workload projection from held-out validation FPH, not a field observation. Together, the missed-event rate and projected review burden define a research prototype requiring substantial recall and false-alert improvement, not a deployment-ready system.
+
+\subsection{Why Track-Based Evidence Remains Useful}
+Persistent identities make image-space velocity, acceleration, heading, track continuity, and pair persistence explicit. The model converts these traceable variables into event-level rather than frame-level output, while retaining the selected track, local context, score path, and attribution for inspection. This transparency helps diagnose whether a miss reflects absent coverage, weak scoring, policy suppression, or temporal mismatch even when it does not solve those failures.
+
+After upstream perception, the downstream classifier operates on structured track features rather than raw pixels; the detector and ReID stages still process visual imagery. This creates a limited data-minimization boundary, not a privacy guarantee. Visual-data retention, access control, and the consequences of surveillance remain deployment-specific obligations outside this study.
+
+\subsection{Limitations and Future Work}
+The primary limitation is recall 0.5435 at 5.0310 FPH. Calibration performance does not fully transfer to held-out validation, exact impact timing is unreliable, and overlapping score distributions prevent threshold-only recovery under the fixed false-event constraint. Complete detector coverage failures are uncommon (2 of 21 misses), yet every downstream claim remains conditional on available tracks; trajectory fragmentation and noise can still affect D2 and D4 cases. The weak row labels mark accident windows, not actor responsibility.
+
+The official ACCIDENT test remains unopened. The ACCIDENT results are grouped-OOF capability analyses, not leaderboard claims. There is no field deployment or operator study, and collision category is neither accident cause nor fault. Future work should test vehicle-localized optical flow for within-box motion and contact timing, sparse visual-semantic analysis only for selected candidate events, improved event-time estimation, prospective operator evaluation, and camera-specific commissioning with false-alert monitoring. None of these extensions is evaluated here.
+
+\section{Conclusion}
+\method{} constructs explicit past-only vehicle-track and local-interaction features and separates row scoring from calibrated event formation. On sealed SO-TAD validation, the full contract preserves the reduced ablation's recall while producing fewer observed normal false events and wrong-window alerts, although paired precision and F1 evidence is not decisive. Image-space spatial localization is the strongest secondary capability; exact temporal localization and hard participant selection remain substantial limitations. The evidence supports interpretable research analysis and human-reviewed prototyping, not autonomous deployment.
+
+\clearpage
+\onecolumn
+\begin{multicols}{2}
+\bibliography{references}
+\end{multicols}
+\end{document}

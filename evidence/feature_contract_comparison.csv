@@ -1,0 +1,133 @@
+position,feature,paper_feature_family,included_full_132,included_reduced_52,selection_rationale
+0,F0,pair interaction,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+1,F1,motion,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+2,F2,motion,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+3,F5,pair interaction,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+4,F6,motion,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+5,F7,direction,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+6,F10,direction,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+7,F11,shape variation,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+8,F13,reliability and missingness,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+9,F14,reliability and missingness,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+10,F15,geometry,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+11,F16,motion,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+12,F17,geometry,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+13,F18,pair interaction,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+14,F19,pair interaction,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+15,track_age,reliability and missingness,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+16,spawn_burst,reliability and missingness,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+17,bbox_w_norm,geometry,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+18,bbox_h_norm,geometry,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+19,bbox_area_norm,geometry,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+20,is_small_box,reliability and missingness,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+21,is_edge_box,reliability and missingness,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+22,far_edge_unreliable,reliability and missingness,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+23,horizon_small_unreliable,reliability and missingness,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+24,bbox_center_jitter,motion,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+25,bbox_scale_jitter,shape variation,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+26,bbox_aspect_jitter,shape variation,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+27,track_fragment_risk,reliability and missingness,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+28,valid_physics_mask,reliability and missingness,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+29,frame_gap,reliability and missingness,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+30,F0_lag_1,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+31,F0_diff_1,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+32,F0_lag_2,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+33,F0_lag_3,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+34,F0_lag_5,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+35,F0_lag_8,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+36,F0_roll_mean_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+37,F0_roll_max_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+38,F0_roll_std_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+39,F0_roll_sum_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+40,F1_lag_1,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+41,F1_diff_1,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+42,F1_lag_2,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+43,F1_lag_3,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+44,F1_lag_5,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+45,F1_lag_8,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+46,F1_roll_mean_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+47,F1_roll_max_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+48,F1_roll_std_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+49,F1_roll_sum_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+50,F2_lag_1,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+51,F2_diff_1,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+52,F2_lag_2,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+53,F2_lag_3,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+54,F2_lag_5,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+55,F2_lag_8,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+56,F2_roll_mean_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+57,F2_roll_max_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+58,F2_roll_std_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+59,F2_roll_sum_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+60,F5_lag_1,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+61,F5_diff_1,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+62,F5_lag_2,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+63,F5_lag_3,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+64,F5_lag_5,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+65,F5_lag_8,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+66,F5_roll_mean_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+67,F5_roll_max_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+68,F5_roll_std_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+69,F5_roll_sum_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+70,F6_lag_1,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+71,F6_lag_2,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+72,F6_lag_3,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+73,F6_lag_5,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+74,F6_lag_8,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+75,F6_roll_mean_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+76,F6_roll_max_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+77,F6_roll_std_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+78,F6_roll_sum_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+79,F7_lag_1,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+80,F7_lag_2,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+81,F7_lag_3,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+82,F7_lag_5,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+83,F7_lag_8,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+84,F7_roll_mean_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+85,F7_roll_max_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+86,F7_roll_std_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+87,F7_roll_sum_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+88,F10_lag_1,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+89,F10_diff_1,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+90,F10_lag_2,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+91,F10_lag_3,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+92,F10_lag_5,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+93,F10_lag_8,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+94,F10_roll_mean_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+95,F10_roll_max_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+96,F10_roll_std_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+97,F10_roll_sum_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+98,F11_lag_1,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+99,F11_diff_1,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+100,F11_lag_2,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+101,F11_lag_3,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+102,F11_lag_5,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+103,F11_lag_8,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+104,F11_roll_mean_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+105,F11_roll_max_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+106,F11_roll_std_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+107,F11_roll_sum_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+108,F19_lag_1,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+109,F19_lag_2,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+110,F19_lag_3,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+111,F19_lag_5,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+112,F19_lag_8,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+113,F19_roll_mean_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+114,F19_roll_max_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+115,F19_roll_std_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+116,F19_roll_sum_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+117,F0_ewm,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+118,F1_ewm,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+119,F2_ewm,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+120,F5_ewm,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+121,F19_ewm,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+122,F1_high_streak,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+123,F2_high_streak,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+124,F5_contact_streak,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+125,F19_contact_streak,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+126,F1_F2_interaction,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+127,bbox_center_jitter_roll_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+128,bbox_scale_jitter_roll_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+129,bbox_aspect_jitter_roll_10,temporal summaries,True,True,"retained by frozen train-OOF utility, stability, redundancy, and family-coverage rule"
+130,valid_physics_mask_roll_mean_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract
+131,track_fragment_risk_roll_mean_10,temporal summaries,True,False,excluded by frozen train-OOF reduction rule; remains in full contract

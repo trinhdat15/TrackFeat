@@ -1,0 +1,45 @@
+{
+  "created_utc": "2026-07-29T10:31:05.353250+00:00",
+  "frozen_scientific_lineage": {
+    "event_evaluator": {
+      "actual_sha256": "af29601192d8c77d44d7281afb4cd8e7d4937ae743350e866ba9d464852fef66",
+      "expected_sha256": "af29601192d8c77d44d7281afb4cd8e7d4937ae743350e866ba9d464852fef66",
+      "pass": true,
+      "path": "source/evaluate_events_v12_58e.py"
+    },
+    "full_model": {
+      "actual_sha256": "397c4860614de1d6eb2d008519aaa03a8a99cab5948c8a28b83ff7b322154fea",
+      "expected_sha256": "397c4860614de1d6eb2d008519aaa03a8a99cab5948c8a28b83ff7b322154fea",
+      "pass": true,
+      "path": "outputs_sotad_phase12_old4c_motor_lowconf_t012/v13_interpretable_132_feature_study/v13_b_clean_132_training/training/models/lightgbm_132_selected.joblib"
+    },
+    "full_policy": {
+      "actual_sha256": "0a4463a9e309b41b5fcffae4a989b8e234f3b4fc6160fd34e4ed77fb2cad1009",
+      "expected_sha256": "0a4463a9e309b41b5fcffae4a989b8e234f3b4fc6160fd34e4ed77fb2cad1009",
+      "pass": true,
+      "path": "outputs_sotad_phase12_old4c_motor_lowconf_t012/v13_interpretable_132_feature_study/v13_c_event_calibration/selected_event_policy.json"
+    },
+    "reduced_model": {
+      "actual_sha256": "9f66abbb9514f653cfaa83bd55c79ffe69be6cfd1a1f3d6f9f6bed3e03db26e6",
+      "expected_sha256": "9f66abbb9514f653cfaa83bd55c79ffe69be6cfd1a1f3d6f9f6bed3e03db26e6",
+      "pass": true,
+      "path": "outputs_sotad_phase12_old4c_motor_lowconf_t012/v13_interpretable_132_feature_study/v13_d_feature_ablation_reduction/completion_01/reduced_model/lightgbm_reduced.joblib"
+    },
+    "reduced_policy": {
+      "actual_sha256": "bacbdf30e96fac47ceef162b5425bbef9c8ecc04243f40d3f4a7f049898913f4",
+      "expected_sha256": "bacbdf30e96fac47ceef162b5425bbef9c8ecc04243f40d3f4a7f049898913f4",
+      "pass": true,
+      "path": "outputs_sotad_phase12_old4c_motor_lowconf_t012/v13_interpretable_132_feature_study/v13_d_feature_ablation_reduction/completion_01/selected_reduced_policy.json"
+    }
+  },
+  "official_test_accessed": false,
+  "paper_inputs": {
+    "accident_ablation_registry.csv": "945f845e057f9de3b06c1da5c9ed5fa7010d40b79ff9ca858351e3d55eb123fe",
+    "accident_primary_and_diagnostic_results.csv": "b3572783f0299b4dedee7167e3d4f950941fa6390ece777a005b1f023e8041c6",
+    "figure_pipeline_v3_provenance.json": "d5aa70ee951ddde0d3ca1a1db4a6d811ff7bdcfcb7d859788e2e2370fed89bbe",
+    "figure_qualitative_validation_examples_v2_provenance.json": "75fb59c3665eaca093fe192214f65915b93d6aef0868fb3ffebbdeee3538382e",
+    "paired_validation_bootstrap.csv": "c0f23a06fef1560ea70d169dd64f03c483e60e383cfaae91acc9708d1dbc2697",
+    "qualitative_example_values.csv": "50b9cfb8fc6ed5ae5cf2ef7ecca7b2cd4d96afd18c1d724caecf2fed8ed20ae2",
+    "trajectory_quality_verdict.json": "3d47aa500265b227d847f52d352aeb8f792253857b79da3a857fb15a57136009"
+  }
+}

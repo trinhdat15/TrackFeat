@@ -1,0 +1,23 @@
+claim_id,claim,evidence_artifact,evidence_status
+C01,The executable upstream checkpoint is YOLOv8s-derived and was fixed before downstream evaluation.,upstream_perception_contract.csv,verified lineage
+C02,TrackFeat uses an exact ordered 132-feature causal contract and a frozen 52-feature development reduction.,full_132_feature_contract.csv;reduced_52_feature_contract.csv,verified contract
+C03,"The 52-feature reduction was selected using training-OOF stability and redundancy evidence, not sealed validation.",feature_selection_lineage.md,development selection
+C04,"Full-132 achieved P=.5102, R=.5435, F1=.5263 and 5.031 FPH on sealed validation.",paper_statistic_ledger.csv,primary validation
+C05,Reduced-52 had the same validation recall but more normal false events and wrong-window alerts.,paired_validation_bootstrap.csv;paper_statistic_ledger.csv,primary validation
+C06,The event policy was selected only on calibration by the frozen recall-first rule.,calibration_policy_registry.csv;calibration_pareto_frontier.csv,selection evidence
+C07,"TSC improved calibration recall but lost one established TP, was not selected, and was never evaluated on validation.",timestamp_diagnostic_summary.md,diagnostic only
+C08,"Feature-family heatmaps report training-OOF model attribution, not causal effects.",feature_family_shap_summary.csv,report-only attribution
+C09,"Trajectory-quality terciles showed no monotonic association with the frozen validation outcome; the analysis is descriptive, not causal.",trajectory_quality_strata_results.csv;trajectory_quality_effect_sizes.csv;trajectory_quality_verdict.json,report-only validation robustness
+C10,"The 21 full-model misses comprise D4=11, D2=7, D3=1, and U1=2 under the frozen diagnostic ledger.",outputs_sotad_phase12_old4c_motor_lowconf_t012/aisi_recall_gap_closure_01/false_negative_root_cause_summary.csv,frozen diagnostic
+C11,"Calibration-only episode midpoint increased TP 29 to 32 and reduced wrong-window alerts 15 to 12, but lost one existing TP and was rejected without validation execution.",outputs_sotad_phase12_old4c_motor_lowconf_t012/aisi_event_timestamp_closure_01/calibration_timestamp_results.csv,diagnostic only
+C12,The qualitative panels are deterministically selected held-out validation cases and displayed probabilities match the frozen full model.,qualitative_example_registry.csv;qualitative_example_values.csv;figure_example_selection.json,report-only qualitative evidence
+C13,The redesigned pipeline uses a real authorized calibration frame and exact frozen full-132 event-policy parameters.,figures/figure_pipeline_v2_provenance.json;figure_example_selection.json,calibration illustration
+C14,"The primary ACCIDENT grouped-OOF chain obtains T=.3128, S=.4127, C=.3432, and ACC-S=.3515 with paired video-bootstrap intervals.",accident_primary_and_diagnostic_results.csv;accident_ablation_provenance.json,primary grouped-OOF development
+C15,Clip midpoint remains the strongest selected temporal control; T2-A does not improve T@1.,accident_ablation_registry.csv,control and Phase-2 diagnostic
+C16,"Highest-risk pair improves image-space S over closest-pair, while oracle time is labeled diagnostic.",accident_ablation_registry.csv,primary and oracle diagnostic
+C17,Full-scene type evidence exceeds hard-pair type evidence; C2-C remains a modest Phase-2 diagnostic.,accident_ablation_registry.csv;accident_primary_and_diagnostic_results.csv,development diagnostic
+C18,"Phase-2 ACC-S=.3568 is report-only, includes 134 wrong-pair cases in its exact condition, and does not replace Prompt-1.",accident_primary_and_diagnostic_results.csv,report-only diagnostic
+C19,"Approximately 40 false events per eight-hour camera shift is a projection from held-out FPH, not a field observation.",paper_statistic_ledger.csv,illustrative projection
+C20,"The system is a research prototype requiring substantial recall and false-alert improvement, not deployment ready.",paper_statistic_ledger.csv;main.tex,scope-calibrated interpretation
+C21,"After upstream perception, downstream scoring uses structured track features, while detector and ReID still process imagery.",upstream_perception_contract.csv;full_132_feature_contract.csv,verified implementation boundary
+C22,The official ACCIDENT test remained unopened; ACCIDENT results are grouped-OOF development evidence.,accident_ablation_provenance.json;paper_reporting_preflight_03.json,access boundary
